@@ -1,0 +1,25 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+#gameBoard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+    margin: 20px auto;
+    width: 200px;
+    height: 200px;
+}
+
+.gameCell {
+    width: 45px;
+    height: 45px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+#gameInfo {
+    margin-top: 20px;
+}
