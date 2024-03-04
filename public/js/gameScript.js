@@ -2,6 +2,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameBoard = document.getElementById('gameBoard');
     initializeGameBoard();
 
+    // 绑定游戏面板的点击事件来建造栅栏
+    gameBoard.addEventListener('click', event => {
+        const cellIndex = Array.from(gameBoard.children).indexOf(event.target);
+        if (cellIndex >= 0) {
+            handleCellClick(cellIndex);
+        }
+    });
+
     document.getElementById('startGame').addEventListener('click', startGame);
 
     function initializeGameBoard() {
@@ -55,9 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('/api/game/start', { method: 'POST' });
             const data = await response.json();
+            if (!data.gameId || !data.playerId) {
+                throw new Error('Game ID or Player ID not found in response');
+            }
             currentGameId = data.gameId;
-            currentPlayerId = data.playerId; // Assume the server returns a playerId for the game starter
-            gameState = data.gameState;
+            currentPlayerId = data.playerId; // 保存从后端获取的 playerId
             fetchGameState();
         } catch (error) {
             console.error('Failed to start game:', error);
@@ -71,18 +81,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ gameId: currentGameId, playerId: currentPlayerId, start, end }),
+                body: JSON.stringify({ gameId: currentGameId, playerId: currentPlayerId, position: { start, end } }),
             });
             const data = await response.json();
-            if (data.success) {
-                fetchGameState(); // Update game state after successfully building a fence
-            } else {
-                console.error('Failed to build fence:', data.message);
+            if (!data.message) {
+                throw new Error('Unexpected response from server');
             }
+            fetchGameState(); // 成功建造栅栏后更新游戏状态
         } catch (error) {
             console.error('Error building fence:', error);
         }
     }
+
 
     function updateUI(gameState) {
         // 更新UI，显示游戏状态、得分等

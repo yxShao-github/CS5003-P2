@@ -1,19 +1,22 @@
 // src/routes/gameRoutes.js
 import express from 'express';
-import { startGame, joinGame, viewGameState, buildFence } from '../controllers/gameController.js';
+import { joinGame, startGame, placeFence, getGameState, leaveGame } from '../controllers/gameController.js';
 
 const router = express.Router();
 
-// Route to start a new game
-router.post('/start', startGame);
-
-// Route for a player to join an existing game
+// 玩家加入游戏
 router.post('/join', joinGame);
 
-// Route to get the current state of the game
-router.get('/state', viewGameState);
+// 开始游戏
+router.post('/start', startGame);
 
-// Route to build a fence
-router.post('/build', buildFence);
+// 玩家放置栅栏
+router.post('/place-fence', placeFence);
+
+// 获取当前游戏状态
+router.get('/state', getGameState);
+
+// 玩家离开游戏
+router.post('/leave', leaveGame);
 
 export default router;
